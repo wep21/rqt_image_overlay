@@ -60,10 +60,10 @@ void ImageOverlay::initPlugin(qt_gui_cpp::PluginContext & context)
 
 void ImageOverlay::shutdownPlugin()
 {
-  if (widget) {
-    delete widget;  // This deletes all the children too
-    widget = nullptr;
-  }
+  imageManager->shutdownSubscription();
+  overlayManager->shutdownSubscriptions();
+  overlayManager->shutdownTimer();
+  compositor->shutdownTimer();
 }
 
 void ImageOverlay::removeOverlay()

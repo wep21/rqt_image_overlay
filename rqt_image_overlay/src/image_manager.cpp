@@ -29,14 +29,13 @@ ImageManager::ImageManager(QObject * parent, const std::shared_ptr<rclcpp::Node>
 
 void ImageManager::callbackImage(const sensor_msgs::msg::Image::ConstSharedPtr & msg)
 {
+  std::cout << "callbackImage" << std::endl;
   std::atomic_store(&lastMsg, msg);
 }
 
 
 void ImageManager::onTopicChanged(const QString & text)
 {
-  subscriber.shutdown();
-
   // reset image on topic change
   std::atomic_store(&lastMsg, sensor_msgs::msg::Image::ConstSharedPtr{});
 
@@ -45,11 +44,11 @@ void ImageManager::onTopicChanged(const QString & text)
   QString transport = parts.length() == 2 ? parts.last() : "raw";
 
   if (!topic.isEmpty()) {
-    image_transport::ImageTransport it(node);
     const image_transport::TransportHints hints(node.get(), transport.toStdString());
     try {
-      subscriber =
-        it.subscribe(topic.toStdString(), 1, &ImageManager::callbackImage, this, &hints);
+      subscriber = image_transport::create_subscription(
+        node.get(), topic.toStdString(), 1,
+        std::bind(&ImageManager::callbackImage, this, std::placeholders::_1), &hints);
       qDebug(
         "ImageView::onTopicChanged() to topic '%s' with transport '%s'",
         topic.toStdString().c_str(), subscriber.getTransport().c_str());
@@ -113,6 +112,12 @@ void ImageManager::setTopicExplicitly(QString topic)
   topics.clear();
   topics.push_back(topic.toStdString());
   endResetModel();
+}
+
+void ImageManager::shutdownSubscription()
+{
+  std::cout << "ImageManager::shutdownSubscription()" << std::endl;
+  subscriber = image_transport::Subscriber{};
 }
 
 }  // namespace rqt_image_overlay

@@ -17,6 +17,7 @@
 
 #include <memory>
 #include <string>
+#include <iostream>
 #include "pluginlib/class_loader.hpp"
 
 // Forward Declaration
@@ -40,9 +41,11 @@ public:
     std::string pluginClass,
     pluginlib::ClassLoader<rqt_image_overlay_layer::PluginInterface> & pluginLoader,
     const std::shared_ptr<rclcpp::Node> & node);
+  ~Overlay(){std::cout << "~Overlay" << std::endl;}
   void setTopic(std::string topic);
   void overlay(QImage & image);
   void setEnabled(bool enabled);
+  void shutdownSubscription();
 
   std::string getTopic() const;
   std::string getPluginClass() const;

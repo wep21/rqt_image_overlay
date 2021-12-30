@@ -35,6 +35,7 @@ public:
   explicit ImageManager(QObject * parent, const std::shared_ptr<rclcpp::Node> & node);
   std::unique_ptr<QImage> getImage() const;
   void setTopicExplicitly(QString topic);
+  void shutdownSubscription();
 
 protected:
   int rowCount(const QModelIndex & parent = QModelIndex()) const override;

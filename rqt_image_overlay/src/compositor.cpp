@@ -24,9 +24,9 @@ namespace rqt_image_overlay
 Compositor::Compositor(
   QObject * parent, const ImageManager & imageManager, const OverlayManager & overlayManager,
   float frequency)
-: QObject(parent), imageManager(imageManager), overlayManager(overlayManager)
+: QObject(parent), imageManager(imageManager), overlayManager(overlayManager),
+  timerId(startTimer(1000.0 / frequency))
 {
-  startTimer(1000.0 / frequency);
 }
 
 void Compositor::setCallableSetImage(std::function<void(std::unique_ptr<QImage>)> setImage)
@@ -61,6 +61,11 @@ void Compositor::timerEvent(QTimerEvent * event)
   }
 
   setImage(std::move(image));
+}
+
+void Compositor::shutdownTimer()
+{
+  killTimer(timerId);
 }
 
 }  // namespace rqt_image_overlay

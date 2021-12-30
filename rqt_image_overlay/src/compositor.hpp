@@ -34,6 +34,7 @@ public:
     float frequency);
 
   void setCallableSetImage(std::function<void(std::unique_ptr<QImage>)> setImage);
+  void shutdownTimer();
 
 private:
   std::unique_ptr<QImage> compose();
@@ -43,6 +44,8 @@ private:
   const OverlayManager & overlayManager;
 
   std::function<void(std::unique_ptr<QImage>)> setImage;
+
+  const int timerId;
 };
 
 }  // namespace rqt_image_overlay

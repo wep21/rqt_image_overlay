@@ -32,9 +32,9 @@ OverlayManager::OverlayManager(QObject * parent, const std::shared_ptr<rclcpp::N
   declaredPluginClasses(pluginLoader.getDeclaredClasses()),
   node(node),
   columns{"Topic", "Type", "Plugin", "Status"},
-  statusIndex(findStatusIndex())
+  statusIndex(findStatusIndex()),
+  timerId(startTimer(STATUS_UPDATE_MS))
 {
-  startTimer(STATUS_UPDATE_MS);
 }
 
 bool OverlayManager::addOverlay(std::string pluginClass)
@@ -63,6 +63,19 @@ void OverlayManager::removeOverlay(unsigned index)
 const std::vector<std::string> & OverlayManager::getDeclaredPluginClasses() const
 {
   return declaredPluginClasses;
+}
+
+void OverlayManager::shutdownSubscriptions()
+{
+  for (auto & overlay : overlays)
+  {
+    overlay->shutdownSubscription();
+  }
+}
+
+void OverlayManager::shutdownTimer()
+{
+  killTimer(timerId);
 }
 
 int OverlayManager::rowCount(const QModelIndex &) const

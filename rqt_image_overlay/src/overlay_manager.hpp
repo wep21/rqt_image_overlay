@@ -44,6 +44,8 @@ public:
   void overlay(QImage & image) const;
   void saveSettings(qt_gui_cpp::Settings & settings) const;
   void restoreSettings(const qt_gui_cpp::Settings & settings);
+  void shutdownSubscriptions();
+  void shutdownTimer();
 
 protected:
   // Overriding QAbstractTableModel methods
@@ -70,6 +72,8 @@ private:
 
   const int statusIndex;  // keep track of status index to avoid constant look up
   int findStatusIndex() const;
+
+  const int timerId;
 };
 
 }  // namespace rqt_image_overlay

@@ -100,8 +100,17 @@ bool Overlay::isEnabled() const
 
 void Overlay::msgCallback(std::shared_ptr<rclcpp::SerializedMessage> msg)
 {
+  std::cout << "Overlay::msgCallback" << std::endl;
   std::atomic_store(&lastMsg, msg);
   std::atomic_store(&timeLastMsgReceived, std::make_shared<rclcpp::Time>(node->now()));
+}
+
+void Overlay::shutdownSubscription()
+{
+  std::cout << "Overlay::shutdownSubscription()" << std::endl;
+  if (subscription) {
+    subscription = nullptr;
+  }
 }
 
 }  // namespace rqt_image_overlay
